@@ -1,14 +1,18 @@
-# What a 180B model builds when you ask it for something beautiful
+# Three HTML pages from a 180B model on one desk
 
-Three HTML pages written by **Qwen3.8-Flash-Next** running locally on a single
-**NVIDIA DGX Spark**. No cloud, no API key, no editing of the design.
+**Qwen3.8-Flash-Next** wrote these three HTML pages. The model ran on one
+**NVIDIA DGX Spark**. It did not use the cloud. It did not use an API key.
+Nobody changed the design.
 
-This repo exists to show the raw material: the exact prompts, the exact output,
-the throughput it ran at, and an honest list of what it got wrong.
+This repository shows the raw material. It gives the exact prompts, the exact
+output, the measured speed, and a list of the errors.
 
-The headline one is [`pages/marginalia.html`](pages/marginalia.html) — an invented
-typography almanac. The prompt never mentioned typography, or almanacs, or a
-colour palette. It picked all of that itself.
+Start with [`pages/marginalia.html`](pages/marginalia.html). It is an invented
+journal about typography. The prompt did not mention typography. It did not
+mention a journal. It did not mention colours. The model selected all of these
+things.
+
+Written in ASD-STE100 Simplified Technical English.
 
 ---
 
@@ -17,151 +21,179 @@ colour palette. It picked all of that itself.
 | | |
 |---|---|
 | Model | [`nvidia/Qwen3.8-Flash-Next-NVFP4`](https://huggingface.co/nvidia/Qwen3.8-Flash-Next-NVFP4) |
-| Parameters | **180.0 B total, 7.31 B active per token** (512 experts, 10 fire) |
-| Architecture | `Qwen4ExpForConditionalGeneration` — 48 layers, 36 linear-attention + 12 full-attention |
-| Context | 262,144 tokens native |
+| Parameters | **180.0 B total, 7.31 B active for each token** (512 experts, 10 do work) |
+| Architecture | `Qwen4ExpForConditionalGeneration` — 48 layers, 36 linear-attention and 12 full-attention |
+| Context | 262,144 tokens |
 | Hardware | 1× DGX Spark, GB10 Blackwell, 121.7 GiB unified memory, 20-core Grace CPU |
-| Server | vLLM nightly `8a728663`, tensor-parallel 1 |
-| Quantization | NVFP4 (96.3% of weight tensors), FP8 block-scaled MTP head, BF16 elsewhere |
-| KV cache | FP8 e4m3 — 838,860 tokens in 12.29 GiB |
-| Speculative decoding | MTP depth 3, 47,149-token reduced draft vocabulary |
+| Server | vLLM nightly `8a728663`, tensor parallel size 1 |
+| Quantization | NVFP4 for 96.3% of the weight tensors, FP8 block-scaled for the MTP head, BF16 for the rest |
+| Key-value cache | FP8 e4m3 — 838,860 tokens in 12.29 GiB |
+| Speculative decoding | MTP depth 3, reduced draft vocabulary of 47,149 tokens |
 
-The whole checkpoint is 123.53 GiB of tensor data on a machine with 121.7 GiB of
-memory. It fits because the 47.68 GiB FP8 n-gram embedding table never enters
-memory — it stays on NVMe and each token reads 16 rows of it.
+The checkpoint holds 123.53 GiB of tensor data. The machine has 121.7 GiB of
+memory. The model still runs. The FP8 n-gram table occupies 47.68 GiB and stays
+on the NVMe disk. Each token reads only 16 rows of that table.
 
 ---
 
 ## The three pages
 
-| Page | Tokens | tok/s | TTFT | Wall clock | Lines |
+| Page | Tokens | tok/s | Time to first token | Total time | Lines |
 |---|---|---|---|---|---|
-| [MARGINALIA](pages/marginalia.html) | 16,991 | **42.81** | 0.222 s | 6 m 37 s | 863 |
-| [Sparse Giant](pages/sparse-giant.html) | 14,383 | **45.41** | 1.61 s | 5 m 18 s | 592 |
-| [Spec sheet](pages/spec-sheet.html) | 9,463 | **46.09** | 0.623 s | 3 m 26 s | 398 |
+| [MARGINALIA](pages/marginalia.html) | 16,991 | **42.81** | 0.222 s | 6 min 37 s | 863 |
+| [Sparse Giant](pages/sparse-giant.html) | 14,383 | **45.41** | 1.61 s | 5 min 18 s | 592 |
+| [Spec sheet](pages/spec-sheet.html) | 9,463 | **46.09** | 0.623 s | 3 min 26 s | 398 |
 
-All three: greedy-ish sampling, thinking mode off, single stream, no system prompt.
-Full prompts and sampling parameters are in [`prompt.md`](prompt.md).
+Each page used one stream. The thinking mode was off. There was no system prompt.
+The file [`prompt.md`](prompt.md) gives the full prompts and the sampling
+parameters.
 
-### MARGINALIA — the open brief
+### MARGINALIA — the open prompt
 
-One sentence asking for something beautiful. It returned a fictional biannual
-journal about printed type: cover, manifesto, contents with page numbers, five
-type specimens, a letterform anatomy diagram, a photo gallery, a colophon and a
-subscribe form. It wrote all the copy. *"Before the eye can read, the eye feels."*
+The prompt was one sentence. It asked for something beautiful. The model returned
+a complete journal about printed type. The page holds eight parts:
 
-Fraunces + Space Grotesk + Spectral, ink-and-gold palette, film-grain overlay,
-scramble-decode masthead, Ken Burns cover, line-mask reveals, custom cursor.
+- a cover
+- a manifesto
+- a list of contents with page numbers
+- five type specimens
+- a diagram of a letterform
+- a gallery of plates
+- a colophon
+- a subscribe form
 
-The JavaScript is defensively written: a `prefers-reduced-motion` branch that
-reveals everything immediately, an `IntersectionObserver`-missing fallback,
-rAF-throttled scroll, passive listeners, and a cursor gated behind `pointer:fine`.
+The model wrote all of the text. One line reads:
+*"Before the eye can read, the eye feels."*
 
-### Sparse Giant & Spec sheet — the constrained briefs
+The page uses three typefaces: Fraunces, Space Grotesk, and Spectral. The palette
+is ink and gold. The page also has a film-grain layer and a scramble-decode
+masthead. The cover image zooms slowly. The headings appear behind a line mask.
+The cursor is a custom shape.
 
-Both were handed real measured numbers and asked to visualise them. Both drew
-their SVG charts to correct scale — the bar arithmetic checks out. The Sparse
-Giant page also kept a deliberately awkward result honest: video input was marked
-**"ACCEPTED — inconclusive"** rather than upgraded to a pass.
+The JavaScript is careful. It has a branch for `prefers-reduced-motion` that shows
+all content immediately. It has a fallback for a missing `IntersectionObserver`.
+It limits the scroll handler with `requestAnimationFrame`. It uses passive
+listeners. It enables the custom cursor only for a fine pointer.
+
+### Sparse Giant and Spec sheet — the closed prompts
+
+Each of these prompts supplied real measured numbers. Each asked the model to draw
+those numbers. Both pages draw their SVG charts to the correct scale. The bar
+arithmetic is correct.
+
+The Sparse Giant page also kept one difficult result honest. The video input test
+was not conclusive. The page marks that row **"ACCEPTED — inconclusive"**. It does
+not change the row to a pass.
 
 ---
 
-## Viewing them
+## How to look at the pages
 
 ```bash
 git clone https://github.com/<you>/html-experiment-qwen-180b
 cd html-experiment-qwen-180b
-open pages/marginalia.html        # macOS.  Linux: xdg-open
+open pages/marginalia.html        # macOS.  On Linux use xdg-open
 ```
 
-Two directories:
+The repository has three directories.
 
-- **`pages/`** — the model's output unedited. `spec-sheet.html` and `sparse-giant.html`
-  are byte-for-byte the API response. `marginalia.html` is the response with only the
-  surrounding prose and the ```` ```html ```` fence removed — the full response is in `raw/`.
-  One of these three renders blank; that is the point, see below.
-- **`pages-fixed/`** — minimal repairs, each one listed below. Nothing about the design, copy or layout was touched.
-- **`raw/`** — the complete API response for MARGINALIA, including the prose it wrapped around the code.
+- **`pages/`** holds the output of the model. The files `spec-sheet.html` and
+  `sparse-giant.html` are exact copies of the response. The file
+  `marginalia.html` is the same response, but without the text around the code
+  and without the markdown fence. One of these three pages shows nothing. This is
+  intentional. The section below explains it.
+- **`pages-fixed/`** holds the same pages with small repairs. The list below gives
+  each repair. Nobody changed the design, the text, or the layout.
+- **`raw/`** holds the complete response for MARGINALIA. It includes the text that
+  the model wrote around the code.
 
 ---
 
-## What it got wrong
+## The errors
 
-This is the interesting half. The model produces genuinely strong design and
-correct chart arithmetic. Its failures cluster in one place: **claims about its
-own output.** It never renders what it writes, so it cannot check.
+The model writes good design. It also draws correct charts. But the errors have
+one common cause. The model makes statements about its own output. It cannot see
+the page, so it cannot check those statements.
 
-**1. Sparse Giant renders completely blank.**
+**1. The Sparse Giant page shows nothing.**
 
 ```css
-.reveal    { opacity: 0; }        /* every section on the page */
-.reveal.in { opacity: 1; }        /* .in is only ever added by JavaScript */
-.grow      { transform: scaleY(0); }   /* every chart bar */
+.reveal    { opacity: 0; }        /* every section of the page */
+.reveal.in { opacity: 1; }        /* only JavaScript can add the .in class */
+.grow      { transform: scaleY(0); }   /* every bar of every chart */
 ```
 
-The brief said no JavaScript. It complied — then wrote reveal animations that
-*require* JavaScript to add a `.in` class. Nothing ever adds it. It also left a
-note in the file stating *"The reveal animations are driven purely by CSS
-transitions"* — but a transition with no state change never fires. It reasoned
-about the constraint and still shipped the contradiction.
+The prompt did not permit JavaScript. The model obeyed that rule. But it then
+wrote reveal animations that need JavaScript to add an `.in` class. Nothing adds
+that class. The model also put a note in the file. The note says *"The reveal
+animations are driven purely by CSS transitions."* This statement is not correct.
+A transition needs a change of state, and no change occurs.
 
-MARGINALIA, generated one prompt later, uses the same `data-reveal` pattern and
-writes the `IntersectionObserver` to drive it. Same model, same session.
+The MARGINALIA page uses the same `data-reveal` pattern. That page includes the
+`IntersectionObserver` code that the pattern needs. The model and the session were
+the same. Only the prompt was different.
 
-**2. MARGINALIA claims to run offline.** Its preamble says *"Everything is
-original and runs offline."* The page hot-links 8 images from `picsum.photos` and
-three font families from Google Fonts.
+**2. The MARGINALIA page gives a wrong description of itself.** The text before
+the code says *"Everything is original and runs offline."* But the page reads 8
+images from `picsum.photos`. It also reads three typefaces from Google Fonts.
 
-**3. Garbled CSS token.** Sparse Giant emitted `background:#3a4considered;`
-mid-declaration. Harmless — browsers drop invalid declarations and the next one
-wins — but it is a real defect.
+**3. A damaged CSS value.** The Sparse Giant page contains
+`background:#3a4considered;`. The browser rejects this value and uses the next
+declaration, so the page looks correct. But the fault is real.
 
-**4. Duplicate attributes.** MARGINALIA has `style="--r:2deg" data-reveal style="--d:1"`
-on four elements. Browsers keep the first `style` and discard the second, so some
-stagger delays silently never apply.
+**4. Two `style` attributes on one element.** The MARGINALIA page has
+`style="--r:2deg" data-reveal style="--d:1"` on four elements. A browser keeps the
+first attribute and rejects the second. Some animation delays therefore do not
+occur.
 
-**5. Invented a date.** The spec sheet stamped itself "Rev 2025.10". Nothing in
-the brief supplied a date.
+**5. An invented date.** The spec sheet gives itself the label "Rev 2025.10". The
+prompt did not supply a date.
 
 ---
 
-## Every change made to `pages-fixed/`
+## Every change in `pages-fixed/`
 
-Nothing else was altered. No design, copy, colour, layout or chart values.
+Nobody changed the design, the text, the colours, the layout, or the chart values.
 
 | File | Change |
 |---|---|
-| `sparse-giant.html` | `.reveal{opacity:0}` → `1`, `.grow{transform:scaleY(0)}` → `none`, so the page renders |
-| `sparse-giant.html` | removed the garbled `background:#3a4considered` |
-| `sparse-giant.html` | added two Hugging Face links in the footer |
-| `marginalia.html` | the 8 `picsum.photos` images downloaded and inlined as data URIs — the *same* images it chose, embedded rather than fetched |
-| all three | stripped the `<html>/<head>/<body>` wrapper so the pages embed cleanly (`<title>`, `<style>`, `<link>` and all body content kept verbatim) |
+| `sparse-giant.html` | `.reveal{opacity:0}` became `1`. `.grow{transform:scaleY(0)}` became `none`. The page now shows its content. |
+| `sparse-giant.html` | The damaged value `background:#3a4considered` was removed. |
+| `sparse-giant.html` | Two Hugging Face links were added to the footer. |
+| `marginalia.html` | The 8 images were downloaded and put into the file as data URIs. They are the same images that the model selected. |
+| all three | The `<html>`, `<head>`, and `<body>` tags were removed, so the pages embed in another page. The `<title>`, `<style>`, `<link>`, and all body content stay the same. |
 
-`pages-fixed/spec-sheet.html` received nothing but the wrapper strip — it needed no repairs.
+The file `pages-fixed/spec-sheet.html` needed no repair. Only the wrapper changed.
 
 ---
 
-## Reproducing it
+## How to repeat this
 
-Serving recipe: [madeye/qwen38-flash-next-on-dgx-spark](https://github.com/madeye/qwen38-flash-next-on-dgx-spark),
-which vendors work from [blazux](https://github.com/blazux/qwen3.8-Flash-DGX) and
+Use the recipe at
+[madeye/qwen38-flash-next-on-dgx-spark](https://github.com/madeye/qwen38-flash-next-on-dgx-spark).
+That repository includes work from
+[blazux](https://github.com/blazux/qwen3.8-Flash-DGX) and
 [MiaAI-Lab](https://github.com/MiaAI-Lab/Qwen3.8-Flash-Next-Single-DGX-Spark). The
-TP1 recipe originates at
+TP1 recipe started at
 [tonyd2wild](https://github.com/tonyd2wild/Qwen3.8-Flash-Next-NVFP4-DGX-Spark).
 
-It is **stock upstream vLLM** — no fork. The NVMe PLE offload works by
-bind-mounting patched Python files read-only over the container's `site-packages`
-at runtime, switched on with `QWEN4EXP_PLE_MMAP=1 QWEN4EXP_PLE_STAGED=1`.
+The server is **stock upstream vLLM**. There is no fork. Docker mounts patched
+Python files read-only over the `site-packages` directory of the container. Three
+environment variables start the disk offload: `QWEN4EXP_PLE_MMAP=1`,
+`QWEN4EXP_PLE_STAGED=1`, and `QWEN4EXP_PLE_MMAP_THREADS=64`.
 
-One trap: `download-weights.sh` sets `HF_HUB_DISABLE_XET=1`, and the 53.7 GB PLE
-file exceeds the non-Xet size limit. `hf download` dies at 72% with *"file is too
-large to be downloaded using the regular download method."* Fetch that one file
-with `curl -C -` instead; the server supports range requests.
+One problem can stop you. The script `download-weights.sh` sets
+`HF_HUB_DISABLE_XET=1`. The PLE file is 53.7 GB, which is too large for that path.
+The download stops at 72 percent. It gives this message: *"file is too large to
+be downloaded using the regular download method."* Download that one file with
+`curl -C -` instead. The server accepts range requests, so curl can continue after
+a broken connection.
 
 ---
 
 ## Licence
 
-The pages are model output, published as generated. The `picsum.photos` images in
-`pages-fixed/marginalia.html` are from [Lorem Picsum](https://picsum.photos/).
-The model checkpoint carries the `nvidia-open-model-license`.
+These pages are the output of a model. They are published as the model wrote them.
+The images in `pages-fixed/marginalia.html` come from
+[Lorem Picsum](https://picsum.photos/). The model checkpoint has the
+`nvidia-open-model-license`.
