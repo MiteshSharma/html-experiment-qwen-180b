@@ -12,6 +12,8 @@ journal about typography. The prompt did not mention typography. It did not
 mention a journal. It did not mention colours. The model selected all of these
 things.
 
+**➜ See the pages live: [miteshsharma.github.io/html-experiment-qwen-180b](https://miteshsharma.github.io/html-experiment-qwen-180b/)**
+
 ![The cover of MARGINALIA, the page that the model designed](img/marginalia.png)
 
 *The cover of [`pages/marginalia.html`](pages/marginalia.html). The model selected
@@ -41,11 +43,15 @@ on the NVMe disk. Each token reads only 16 rows of that table.
 
 ## The three pages
 
-| Page | Tokens | tok/s | Time to first token | Total time | Lines |
-|---|---|---|---|---|---|
-| [MARGINALIA](pages/marginalia.html) | 16,991 | **42.81** | 0.222 s | 6 min 37 s | 863 |
-| [Sparse Giant](pages/sparse-giant.html) | 14,383 | **45.41** | 1.61 s | 5 min 18 s | 592 |
-| [Spec sheet](pages/spec-sheet.html) | 9,463 | **46.09** | 0.623 s | 3 min 26 s | 398 |
+| Page | Live | Source | Tokens | tok/s | Time to first token | Total time | Lines |
+|---|---|---|---|---|---|---|---|
+| MARGINALIA | [open](https://miteshsharma.github.io/html-experiment-qwen-180b/pages/marginalia.html) | [file](pages/marginalia.html) | 16,991 | **42.81** | 0.222 s | 6 min 37 s | 863 |
+| Sparse Giant | [open](https://miteshsharma.github.io/html-experiment-qwen-180b/pages-fixed/sparse-giant.html) | [file](pages/sparse-giant.html) | 14,383 | **45.41** | 1.61 s | 5 min 18 s | 592 |
+| Spec sheet | [open](https://miteshsharma.github.io/html-experiment-qwen-180b/pages/spec-sheet.html) | [file](pages/spec-sheet.html) | 9,463 | **46.09** | 0.623 s | 3 min 26 s | 398 |
+
+The Sparse Giant link opens the repaired page. The page in `pages/` shows nothing,
+which the section on errors explains. You can see that empty page
+[here](https://miteshsharma.github.io/html-experiment-qwen-180b/pages/sparse-giant.html).
 
 Each page used one stream. The thinking mode was off. There was no system prompt.
 The file [`prompt.md`](prompt.md) gives the full prompts and the sampling
@@ -93,7 +99,7 @@ not change the row to a pass.
 ## How to look at the pages
 
 ```bash
-git clone https://github.com/<you>/html-experiment-qwen-180b
+git clone https://github.com/MiteshSharma/html-experiment-qwen-180b
 cd html-experiment-qwen-180b
 open pages/marginalia.html        # macOS.  On Linux use xdg-open
 ```
