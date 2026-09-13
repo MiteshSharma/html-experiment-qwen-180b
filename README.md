@@ -17,8 +17,6 @@ things.
 *The cover of [`pages/marginalia.html`](pages/marginalia.html). The model selected
 the typeface, the palette, the layout, and every word.*
 
-Written in ASD-STE100 Simplified Technical English.
-
 ---
 
 ## The setup
