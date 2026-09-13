@@ -12,6 +12,11 @@ journal about typography. The prompt did not mention typography. It did not
 mention a journal. It did not mention colours. The model selected all of these
 things.
 
+![The cover of MARGINALIA, the page that the model designed](img/marginalia.png)
+
+*The cover of [`pages/marginalia.html`](pages/marginalia.html). The model selected
+the typeface, the palette, the layout, and every word.*
+
 Written in ASD-STE100 Simplified Technical English.
 
 ---
@@ -148,6 +153,16 @@ occur.
 
 **5. An invented date.** The spec sheet gives itself the label "Rev 2025.10". The
 prompt did not supply a date.
+
+**6. Two blocks of text overlap on the cover.** Look at the lower right corner of
+the screenshot above. The side column and the meta row occupy the same space. The
+words "NO. XIV" sit on top of "ISSUE Nº XIV". The words "BOUND IN CLOTH" sit on top
+of "VOL. IX". The model cannot see this fault, because it never renders the page.
+
+**7. The images do not show the subject.** The model asked `picsum.photos` for
+images with names such as `letterpress-ink-typography`. That service ignores the
+name and returns an arbitrary photograph. The cover therefore shows palm trees.
+The model expected a photograph of type.
 
 ---
 
